@@ -1,0 +1,29 @@
+{
+  "task": {
+    "kind": "customer_facing_ai_interaction",
+    "output_type": "text"
+  },
+  "profile": {
+    "product_role": "provider_and_deployer",
+    "user_jurisdiction": "EU",
+    "article50_triggered": true,
+    "high_risk_use": false,
+    "role_declared": true,
+    "classification_reviewed": true,
+    "ai_literacy_evidence_bound": true,
+    "prohibited_practice_screen_passed": true
+  },
+  "policy": {
+    "version": "eu-ai-act-demo-policy-v1",
+    "fail_closed": true
+  },
+  "evidence": {
+    "model_version": "jarvi3-demo-1",
+    "source_state": "sha256:demo-input"
+  },
+  "candidate": {
+    "answer": "Here is the requested summary.",
+    "confidence": 0.99,
+    "disclosure_applied": false
+  }
+}

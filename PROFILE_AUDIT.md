@@ -1,90 +1,146 @@
-# GitHub profile and public-positioning audit
+# EcoKure DTL Corporate Positioning Audit
 
 Audit date: 13 August 2026
-Audited account: `kyal102`
-Primary product: JARVI3 / DTL
+Audience: enterprise buyers, technical evaluators, legal and compliance
+teams, security teams, researchers and integration partners
 
-## Current state observed
+## Executive assessment
 
-- The account has a public profile repository at `kyal102/kyal102` with a
-  strong deterministic-verification thesis and links to multiple gate demos.
-- A dedicated public showcase repository, `kyal102/eu-ai-act-dtl`, is now live
-  with a v1.0.0 release and passing reference CI.
-- The main `kyal102/jarvi3` repository is private and is very large compared
-  with the public lite repositories.
-- Several public repositories demonstrate individual gates, evidence packs,
-  replay, benchmarks and domain examples.
-- The public profile README already states an important limitation boundary:
-  a passing gate is not automatically scientific truth, clinical safety,
-  regulatory compliance or production readiness.
+The underlying EcoKure DTL work is materially broader than the former public
+presentation suggested. The implementation includes a deterministic
+probabilistic-transition contract, reusable taxonomy lanes, specialist gates,
+evidence and replay, signed attestation, application-sink guards, private
+tenant registry behaviour, metering and multi-domain research lanes.
 
-## Strengths
+The former public copy led with a narrow EU AI Act demonstrator. That created
+three positioning risks:
 
-1. The thesis is memorable: â€œAI proposes. Gates verify. Evidence records.
-   Replay checks drift.â€
-2. The account has a coherent family of public demonstrations rather than one
-   unsupported landing page.
-3. The public README already separates a measured gate result from a broad
-   safety or compliance claim.
-4. The EU AI Act DTL project now adds a timely, legally bounded use case to the
-   existing ClaimGate/EvidencePack/ReplayGate story.
+1. companies could mistake the project for a checklist or a small compliance
+   script;
+2. the DTL platform and its actual gate portfolio were hidden; and
+3. the public materials did not clearly distinguish product capabilities,
+   reference code, research previews and legal responsibilities.
 
-## Highest-impact weaknesses
+This revision positions **EcoKure DTL as enterprise verification
+infrastructure**, with the EU AI Act as a governed implementation profile.
 
-1. **Discoverability:** the flagship link is now present; pinning the new
-   repository and adding a short demo GIF would improve conversion further.
-2. **Repository sprawl:** many small gate repositories can look fragmented to
-   a new reviewer. They need a clear â€œstart here / why these repos existâ€ map.
-3. **Evidence of maturity:** the public material needs a visible conformance
-   matrix, threat model, versioning, source registry and negative test suite.
-4. **Legal wording risk:** â€œAI Actâ€ projects can easily overclaim. Every public
-   page should say mapping/readiness/evidence layerâ€”not certification.
-5. **Profile conversion:** the profile should make the target audience clear:
-   technical reviewers, safety/security teams, enterprise pilots and
-   researchers.
+## Recommended company message
 
-## Professional profile roadmap
+> EcoKure DTL gives companies a deterministic acceptance boundary around
+> probabilistic AI: canonical tasks, domain lanes, specialist verification,
+> replayable evidence, signed attestation and controlled human escalation.
 
-### Today
+Short version:
 
-- Link this project from the profile README under a â€œCurrent flagshipâ€ section.
-- Put the one-line thesis, demo command and BLOCK/ALLOW proof above the fold.
-- Keep a short â€œdoes not proveâ€ line beside every benchmark.
-- Pin three repositories: the flagship DTL demo, the end-to-end evidence demo,
-  and the security benchmark.
+> AI can generate possibilities. EcoKure DTL determines what the organisation
+> can accept, explain, replay and act on.
 
-### Next 30 days
+## Message hierarchy
 
-- Publish a dedicated public repository named `eu-ai-act-dtl` or move this
-  self-contained folder into a clean public repository.
-- Add GitHub Actions, release tags, a changelog and a versioned evidence schema.
-- Invite independent review from one legal/compliance practitioner, one
-  security engineer and one academic or standards reviewer.
-- Publish four fixed scenarios: Article 50, prohibited-use block,
-  high-risk-human-review abstention and stale-evidence replay drift.
+### 1. Business outcome
 
-### Next 90 days
+Make AI-enabled operations inspectable and controlled before a generated output
+becomes an accepted fact, decision, record or action.
 
-- Publish latency and replay benchmarks with exact hardware and commit SHA.
-- Add signed evidence packs and a verifier that works offline.
-- Add a transparent issue tracker for open legal interpretation questions.
-- Build a small hosted demo that never accepts personal data by default.
-- Create a â€œprovider vs deployer vs downstream providerâ€ integration guide.
+### 2. Technical mechanism
 
-### Long-term
+Canonicalise the task and state, route to the right deterministic lane, run the
+applicable gate, detect disagreement, record the result and preserve replayable
+evidence.
 
-- Maintain a dated legal-source registry and change-impact process.
-- Seek external assurance rather than self-awarded â€œ100%â€ claims.
-- Keep the open reference verifier small and auditable; keep tenant operations,
-  billing and product orchestration separate.
+### 3. Enterprise controls
 
-## Suggested profile headline
+Tenant isolation, access-scoped lane serving, provenance, metering, signed
+attestation, human review and change-triggered revalidation.
 
-> Building deterministic verification boundaries for probabilistic AI â€”
-> canonical tasks, evidence, replay and human review across AI governance,
-> science and security.
+### 4. Application profiles
 
-## Suggested profile call-to-action
+EU AI Act readiness evidence, security verification, mathematical and
+scientific claims, clinical decision-support evaluation, hardware assurance
+research and other domain-specific lanes.
 
-> Start with EU AI Act DTL: run one command, watch a 99%-confidence candidate
-> fail a missing Article 50 control, then replay the corrected state.
+### 5. Boundary
+
+DTL supports assurance and governance. It is not itself a lawyer, regulator,
+notified body, medical device, security programme or universal truth oracle.
+
+## Who EcoKure DTL is for
+
+| Buyer or stakeholder | Why the platform matters |
+|---|---|
+| AI product and platform teams | Introduce a stable acceptance boundary without making the model itself deterministic |
+| Risk, compliance and legal teams | Tie declared roles, controls and evidence to a versioned technical record |
+| Security teams | Route claims and application inputs into deterministic security gates and replay results |
+| Engineering and QA teams | Promote verified repair knowledge and retain reproducible failure evidence |
+| Regulated-industry operators | Make human oversight, abstention, traceability and incident evidence explicit |
+| AI providers and deployers | Separate provider, deployer and domain-owner responsibilities in the integration record |
+| Research and assurance partners | Re-run domain lanes and challenge the verifier with independent evidence |
+
+## Public repository strategy
+
+The public repository should make the following path obvious:
+
+1. **Understand:** read this company-facing overview.
+2. **Inspect:** read the architecture and the capability register.
+3. **Run:** execute the dependency-free EU AI Act reference verifier.
+4. **Challenge:** review tests, negative cases, limitations and source links.
+5. **Integrate:** use the API/SDK concepts and request a deployment discussion.
+
+The open reference surface should remain small and auditable. Enterprise
+deployment concernsâ€”private lane data, customer tenancy, operational
+connectors, support, billing and managed hostingâ€”should be described as
+product boundaries, not implied to be contained in this demo repository.
+
+## Proof standard
+
+Every public capability should have one of these labels:
+
+- **Reference implementation:** executable in this repository or the linked
+  source tree;
+- **Technical support:** the platform has the data model or integration seam,
+  but organisational evidence is still required;
+- **Preview:** an implementation exists but is not represented as production or
+  regulated-domain readiness;
+- **Research:** demonstrates generalisation or a concept and requires domain
+  validation; or
+- **External responsibility:** legal, clinical, regulatory, operational or
+  organisational work outside the verifier.
+
+This vocabulary is more credible to companies than blanket readiness claims.
+
+## Required maintenance discipline
+
+- Pin every release to a commit and run the public CI suite.
+- Keep legal sources dated and re-check the official timeline before each
+  release.
+- Publish negative and abstention cases, not only successful examples.
+- Include the exact verifier, policy, evidence and state hashes in examples.
+- Maintain a change log for control mappings and maturity labels.
+- Never describe a passing gate as certification or universal safety.
+- Invite independent review from legal/compliance, security and domain experts.
+
+## Recommended profile wording
+
+### Company headline
+
+> EcoKure DTL â€” deterministic verification infrastructure for AI-enabled
+> operations.
+
+### Company description
+
+> EcoKure DTL separates probabilistic AI generation from deterministic
+> acceptance. It provides canonical task routing, domain verification lanes,
+> evidence packs, replay, signed attestation and controlled human escalation
+> for companies deploying AI in consequential workflows.
+
+### Call to action
+
+> Review the company brief, run the public verifier, inspect the evidence
+> contract and contact EcoKure to discuss a governed deployment profile.
+
+## Conclusion
+
+The public story should lead with the platform and the company problem. The EU
+AI Act application then becomes proof of how EcoKure DTL can map a complex,
+role-dependent governance regime onto deterministic evidence and review
+controls.

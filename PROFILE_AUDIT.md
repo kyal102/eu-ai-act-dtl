@@ -8,6 +8,8 @@ Primary product: JARVI3 / DTL
 
 - The account has a public profile repository at `kyal102/kyal102` with a
   strong deterministic-verification thesis and links to multiple gate demos.
+- A dedicated public showcase repository, `kyal102/eu-ai-act-dtl`, is now live
+  with a v1.0.0 release and passing reference CI.
 - The main `kyal102/jarvi3` repository is private and is very large compared
   with the public lite repositories.
 - Several public repositories demonstrate individual gates, evidence packs,
@@ -29,8 +31,8 @@ Primary product: JARVI3 / DTL
 
 ## Highest-impact weaknesses
 
-1. **Discoverability:** the profile does not yet lead with a single flagship
-   EU AI Act DTL demo and one reproducible command.
+1. **Discoverability:** the flagship link is now present; pinning the new
+   repository and adding a short demo GIF would improve conversion further.
 2. **Repository sprawl:** many small gate repositories can look fragmented to
    a new reviewer. They need a clear â€œstart here / why these repos existâ€ map.
 3. **Evidence of maturity:** the public material needs a visible conformance

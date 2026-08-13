@@ -246,7 +246,7 @@ DTL itself has failure modes:
 | Operators treat PASS as certification | Hard wording boundary, ClaimLint, public limitations | Human misuse is not eliminated |
 | Version drift changes verdicts | Input/policy/ruleset hashes and replay mismatch | Some external APIs are nondeterministic |
 
-## 100x roadmap
+## Professionalisation roadmap
 
 ### 1. Make the public proof undeniable
 

@@ -1,6 +1,7 @@
 name: EU AI Act DTL reference verifier
 
 on:
+  workflow_dispatch:
   push:
     paths:
       - "eu-ai-act-dtl/**"

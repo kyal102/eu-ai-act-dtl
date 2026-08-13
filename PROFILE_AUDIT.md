@@ -43,7 +43,7 @@ Primary product: JARVI3 / DTL
    technical reviewers, safety/security teams, enterprise pilots and
    researchers.
 
-## 100x profile plan
+## Professional profile roadmap
 
 ### Today
 

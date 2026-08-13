@@ -1,26 +1,24 @@
-# EU AI Act DTL
+# EcoKure DTL
 
-## A deterministic evidence layer for probabilistic AI
+## Enterprise architecture and EU AI Act implementation guide
 
-**Status:** reference architecture and engineering demonstrator
-**Version:** 1.0
-**Research cut-off:** 13 August 2026 (Australia/Sydney)
-**Legal boundary:** this document is not legal advice, a legal classification,
-a conformity assessment, a certification, or a declaration of compliance.
+**Document status:** public technical reference
+**Version:** 1.1
+**Date:** 13 August 2026
+**Audience:** enterprise architects, AI platform teams, governance, risk,
+security, assurance and legal stakeholders
+**Legal boundary:** this document is not legal advice, a conformity assessment,
+certification, declaration of compliance or notified-body opinion.
 
-## Executive summary
+## 1. Executive position
 
-The EU AI Act is not a single checklist. It is a role-, purpose-, risk- and
-context-dependent regulation. The same base model can sit inside a low-risk
-chat experience, a transparency-triggered generative system, a high-risk
-employment workflow, or a general-purpose AI model supply chain. The legal
-answer changes with those facts.
+EcoKure DTL is a verification infrastructure layer for organisations that use
+probabilistic AI in consequential workflows.
 
-DTL is useful at a different layer: it makes the system's **accepted semantic
-state** deterministic. A model can still interpret, explore and generate
-probabilistically, but it cannot turn a probabilistic candidate into an
-accepted control, decision or action until the candidate survives an explicit
-verification lane.
+The platform does not attempt to make a language model deterministic. It keeps
+the model useful for interpretation, reasoning, generation and exploration. It
+constrains the transition from a model candidate to an accepted semantic state,
+business action or regulated record.
 
 The core invariant is:
 
@@ -29,294 +27,394 @@ same canonical task + same evidence + same policy/state
     = same accepted semantic result
 ```
 
-DTL does not claim to solve the whole EU AI Act. It supplies an evidence and
-decision boundary that can support several obligations:
+Natural-language wording can differ. The internal task, lane, evidence,
+verification decision, limitations and result identity cannot silently differ
+for the same state.
 
-- identify the intended use and applicable operator role;
-- route to a declared legal/product lane;
-- bind the candidate to the evidence and policy state used;
-- verify structured controls deterministically;
-- fail closed, abstain, or request human review when required;
-- seal a replayable record of the result and limitations;
-- render natural language only after the canonical result exists.
+The EU AI Act is an implementation profile for this architecture. It is not
+the full product definition. The same boundary can support security, software
+quality, scientific claims, clinical decision-support evaluation, engineering
+assurance and other domain lanes, each with its own rules and maturity.
 
-## What changed in the current legal landscape
+## 2. Product scope
 
-The Act applies progressively. The official implementation timeline currently
-records: entry into force on 1 August 2024; general provisions, AI literacy and
-prohibitions from 2 February 2025; GPAI rules and governance from 2 August
-2025; the majority of rules, Article 50 transparency and enforcement of the
-applicable rules from 2 August 2026; a transition for certain pre-existing
-synthetic-content systems on 2 December 2026; high-risk Annex III rules on 2
-December 2027; and regulated-product high-risk rules on 2 August 2028. The
-timeline notes amendments introduced by the Digital Omnibus on AI, so dates and
-scope must be rechecked before each release.
+EcoKure DTL has six product surfaces:
 
-Sources: [official implementation timeline](https://ai-act-service-desk.ec.europa.eu/en/ai-act/eu-ai-act-implementation-timeline),
-[Regulation (EU) 2024/1689](https://eur-lex.europa.eu/eli/reg/2024/1689/oj?locale=en).
+1. **Transition orchestration** â€” canonical task construction, relevance,
+   deterministic routing and candidate disagreement handling.
+2. **DTL Registry** â€” reusable, versioned and access-scoped taxonomy lanes.
+3. **Specialist gates** â€” deterministic domain verifiers and guarded
+   application sinks.
+4. **Evidence and replay** â€” sealed artifacts, certificates, replay and drift
+   detection.
+5. **Attestation and audit** â€” signed verdicts, hash-chain history and exports.
+6. **Enterprise operations** â€” tenant scope, roles, model/policy state,
+   approvals, monitoring, connectors and metering.
 
-Article 50 now applies from 2 August 2026. The Commission's current guidance
-states that providers must inform people when they interact directly with an
-AI system and add machine-readable marks for AI-generated or manipulated
-content; deployer obligations also cover specified deepfakes, biometric or
-emotion-recognition exposure, and certain public-interest text publications.
+The public repository focuses on the EU AI Act profile and a small reference
+verifier. The broader implementation contains the platform seams and gate
+portfolio; deployment maturity is gate-specific and must not be inferred from
+the existence of a common API.
 
-Sources: [Article 50 transparency guidance](https://digital-strategy.ec.europa.eu/en/policies/guidelines-ai-transparency-obligations),
-[Article 50 FAQ](https://digital-strategy.ec.europa.eu/en/faqs/transparency-obligations-under-article-50-ai-act),
-[transparency code of practice](https://digital-strategy.ec.europa.eu/en/policies/code-practice-ai-generated-content).
-
-The Commission's high-risk guidance is non-binding and reflects the
-Commission's interpretation. It is useful for implementation planning, but it
-does not replace the Regulation, a competent-authority position, or legal
-advice. The guidance currently reflects a revised high-risk timeline following
-the Digital Omnibus.
-
-Source: [high-risk systems guidance](https://digital-strategy.ec.europa.eu/en/policies/guidelines-ai-high-risk-systems).
-
-## The DTL boundary
+## 3. Reference architecture
 
 ```mermaid
 flowchart LR
-    A[User request / system event] --> B[Probabilistic interpretation]
-    B --> C[Operator-defined profile]
-    C --> D[Canonical task + policy snapshot]
-    D --> E[Deterministic DTL lane]
-    B --> F[Candidate answer / action]
-    E --> G[Structured claim and control extraction]
-    F --> G
-    G --> H[Exact rules, calculations, allowlists, evidence checks]
-    H --> I{Verified state}
-    I -->|PASS| J[ALLOW + evidence pack]
-    I -->|FAIL| K[BLOCK + reason]
-    I -->|insufficient / conflict| L[ABSTAIN + human review]
-    J --> M[Natural-language rendering]
-    K --> M
-    L --> M
+    A[User request, model event or system input] --> B[Probabilistic interpretation]
+    B --> C[Canonical task and relevance assessment]
+    C --> D[Declared role, purpose, policy and state]
+    D --> E[DTL Registry route]
+    E --> F[Deterministic domain lane]
+    B --> G[Candidate answer, claim or action]
+    F --> H[Claim and control normalization]
+    G --> H
+    H --> I[Specialist verifier]
+    I --> J{Verification decision}
+    J -->|ALLOW| K[Canonical accepted result]
+    J -->|BLOCK| L[Rejected result and reason]
+    J -->|ABSTAIN| M[Human review or evidence request]
+    K --> N[EvidencePack]
+    L --> N
+    M --> N
+    N --> O[ReplayGate]
+    O --> P[Signed attestation and audit export]
+    K --> Q[Natural-language or system rendering]
+    L --> Q
+    M --> Q
 ```
 
-The model's confidence is metadata. It is never a substitute for a passed
-control. Repeatedly generating the same wrong answer is deterministic
-repeatability, not deterministic correctness.
+### 3.1 Probabilistic layer
 
-## Responsibility model
+The AI layer may:
 
-DTL must keep these responsibilities separate:
+- interpret an open-ended request;
+- identify candidate tasks and possible lanes;
+- generate multiple candidate answers;
+- extract claims from prose;
+- propose a repair, decision or action;
+- rephrase an accepted result for a human audience; and
+- explore alternatives when the deterministic lane permits it.
 
-| Question | Who/what answers it? | DTL boundary |
+Its confidence score is metadata. It is never a verification control.
+
+### 3.2 Deterministic DTL layer
+
+The DTL layer:
+
+- establishes the canonical task and normalized input state;
+- ranks relevant evidence and detects ambiguous relevance;
+- binds the request to a declared policy, role, purpose and ruleset;
+- routes to a deterministic lane with an explicit gate contract;
+- converts candidates into structured claims and result fields;
+- applies exact calculations, fixed rules, schemas, allowlists or domain
+  oracles;
+- detects disagreement before acceptance;
+- classifies a result as accepted, rejected, unresolved or incomplete;
+- creates evidence and replay material; and
+- permits natural-language rendering only after the semantic decision exists.
+
+### 3.3 Disagreement handling
+
+Repeated reasoning over an identical canonical state can produce conflicting
+candidate conclusions. DTL does not silently pick the most confident one. It
+classifies the state as:
+
+1. one candidate passed the deterministic path and the others failed;
+2. multiple candidates are valid under the task's rules;
+3. evidence is insufficient to determine one result; or
+4. the lane or rules are incomplete.
+
+This distinction matters because deterministic repeatability is not
+deterministic correctness. A model can repeat the same wrong answer and still
+fail the verifier.
+
+## 4. DTL lane and registry model
+
+A lane is a reusable behaviour and verification contract. Its required fields
+are:
+
+| Field | Enterprise meaning |
+|---|---|
+| `name` and `domain` | The bounded behaviour family and domain owner |
+| `trigger_evidence` | What evidence routes a case into the lane |
+| `root_cause` | The failure family or condition being controlled |
+| `patch_boundary` | Where the durable fix or action must be applied |
+| `verification_gate` | The deterministic verifier that closes the lane |
+| `promotion_rule` | When a verified record can become reusable knowledge |
+| `verification` | Passing/total result and supporting evaluation identity |
+| `state_vector` | Program, evidence, failure, boundary, action, result and memory state |
+
+A lane is servable only when it has a non-zero verification set and every
+required evaluation passes. Failed attempts remain evidence of an attempt but
+are never served as verified knowledge.
+
+The Registry adds product controls around the open lane format:
+
+- tenant-owned private lanes;
+- explicit and logged bridge-to-public operations;
+- tier and access-level routing;
+- content hashes and verification provenance;
+- route metering and usage reporting; and
+- one-way import from a verified core/export seam.
+
+The Registry is not a certifying authority. The domain verifier closes the gate
+in the customer's environment.
+
+## 5. Gate portfolio and maturity
+
+| Service | Verification role | Maturity boundary |
 |---|---|---|
-| Is this the provider, deployer, importer, distributor, downstream provider, or another role? | Operator and legal/product review | Store the declared role and version it; do not infer it from confidence. |
-| Is the intended purpose high-risk under Article 6 and Annex III, or changed by a later modification? | Operator, domain owner and legal review | Require a classification record and route the declared result. |
-| Is a use prohibited under Article 5? | Policy and legal review | Enforce a pre-use block lane and retain the policy/evidence used. |
-| What exactly did the model propose? | Probabilistic model | Normalize into structured claims/fields before acceptance. |
-| Did the candidate satisfy the fixed control? | Deterministic verifier | Return PASS, FAIL or INCOMPLETE with a reason. |
-| Is a human required to review or override? | System policy and responsible operator | Make the review state explicit; never hide it behind wording. |
-| Does the product meet the Act overall? | Provider/deployer and qualified legal/compliance function | DTL reports readiness evidence, never certification. |
+| SuperMath | Exact integer/rational, symbolic and calculus evaluation | Deterministic calculation; not a universal scientific proof system |
+| UnitGate | Dimensional analysis | Unit consistency only |
+| ElementGate | Formula, molar-mass and reaction-balance checks | Curated chemistry calculation only |
+| ClaimGate | Extracts prose claims and routes them to a verifier | Unverifiable claims stay unresolved |
+| ClaimLint | Flags unsupported or over-claiming wording | Review aid; not legal approval |
+| EvidencePack | Seals the gate result, provenance and reproduction state | Integrity and auditability, not truth by itself |
+| ReplayGate | Re-runs a sealed result and compares the recorded state | Drift detection; external dependencies need control |
+| SecurityGate | OWASP-family classification and guarded/fixed-mode checks | Part of a security control set, not a complete programme |
+| DTL App Guard | Fail-closed checks at filesystem, SQL, HTML, URL, redirect and shell sinks | Application boundary control; integration remains required |
+| MedGate | Rule-based clinical decision-support evaluation | Not a registered medical device or clinical authority |
+| ChipGate | RTL structural-safety scan, passport and benchmark | Preview; not silicon readiness or physical safety |
+| OrbitGate | Conjunction/collision research lanes | Preview; not flight software or ECSS/DO-178C certification |
+| DiscoveryGate/BioGate | Protein and mutation research lanes | Research demonstration; not a biomedical conclusion |
+| Research Taxonomy | Cross-domain lane packs and proposer-training interfaces | Generalisation research; each domain needs validation |
 
-## Control-by-control mapping
+Capability labels in product material must distinguish **reference
+implementation**, **technical support**, **preview**, **research** and
+**external responsibility**. A shared platform interface does not make every
+domain gate equally mature.
 
-The matrix below describes technical support, not legal fulfilment. â€œDTL
-contributionâ€ means the type of evidence or gate DTL can provide. It does not
-mean the control is complete.
+## 6. Evidence, replay and attestation
 
-| Act area | Problem the Act addresses | DTL contribution | Required evidence outside the verifier | Status in this reference |
-|---|---|---|---|---|
-| Articles 2â€“3 | Scope, definitions, role and context ambiguity | Versioned product profile, jurisdiction, intended purpose and operator role | Legal scope memo, contracts, market-placement facts | Operator input required |
-| Article 4 | People using or operating AI may lack suitable AI literacy | Role-bound training record IDs and review gates | Training plan, attendance, competency records | Evidence interface |
-| Article 5 | Prohibited manipulation, exploitation or other banned practices | Fail-closed prohibited-practice screen before serving or acting | Policy catalogue, test suite, legal review, abuse monitoring | Partial reference lane |
-| Articles 6â€“7 / Annex III | Misclassification of high-risk intended purposes | Classification record becomes a routing/state input, not a model guess | Annex III analysis, exceptions analysis, legal sign-off | Operator input required |
-| Article 9 | High-risk risk management must be continuous and documented | Risk-state hash, residual-risk gate, change-triggered revalidation | Risk register, metrics, foreseeable misuse analysis, mitigations | Partial |
-| Article 10 | Training/validation/test data quality and governance | Data provenance and freshness fields; input completeness gate | Dataset governance, representativeness, bias/quality analysis | Partial |
-| Article 11 | Technical documentation must describe the system | Pinned model/ruleset versions, lane manifest and evidence export | Annex IV technical file, architecture, evaluation results | Partial |
-| Article 12 | High-risk operation must be traceable | Hash-chained request, route, control and verdict record | Retention, access, deletion, security and export policy | Strong technical support |
-| Article 13 | Deployers need understandable capabilities and limitations | Canonical result plus limitations and reason codes | Instructions for use, contact details, known failure modes | Partial |
-| Article 14 | Human oversight must be effective | Abstain state, escalation queue, role-bound approval, stop/override events | Human oversight procedure, staffing, training and authority | Strong technical support |
-| Article 15 | Accuracy, robustness and cybersecurity over the lifecycle | Deterministic test harness, replay mismatch, fail-closed control | Domain metrics, adversarial tests, security programme, monitoring | Partial; verifier is not proof of model accuracy |
-| Articles 16â€“21 | Provider lifecycle, quality, records, corrective action and cooperation | Release manifest, signed evidence pack, change/revalidation triggers | QMS, conformity assessment, corrective action and authority process | Partial |
-| Article 25 | Value-chain changes can move responsibility to another provider | Immutable intended-purpose and modification history | Supplier agreements, technical access and role allocation | Evidence interface |
-| Article 26 | Deployer instructions, monitoring, human oversight and incident handling | Deployer-scoped runtime logs, monitoring provenance and escalation | Instructions, monitoring plan, input governance, incident procedure | Partial |
-| Article 27 | Certain deployers need a fundamental-rights impact assessment | FRIA record ID, affected-group fields, mitigation and update trigger | Completed FRIA, notification, DPIA relationship and governance | Evidence interface |
-| Article 50(1) | People should know when directly interacting with AI | Deterministic disclosure control and output metadata | UX copy, accessibility, placement and user testing | Demonstrated |
-| Article 50(2) | Synthetic/manipulated content must be machine-detectable in relevant cases | Provenance/marking state, media marker test and hash | Marking implementation, detection tests, code-of-practice or equivalent evidence | Partial |
-| Article 50(4â€“5) | Deepfakes and certain biometric/emotion/public-interest content can mislead | Output-type and trigger routing; block if required label is missing | Content classification, editorial review and notices | Partial |
-| Articles 51â€“54 | GPAI providers need documentation, copyright policy and training-summary information | Model identity/version manifest, source registry and evidence export | GPAI technical docs, copyright policy, public training-content summary | Provider-role dependent |
-| Article 55 | GPAI systemic-risk providers need risk, incident and cybersecurity controls | Systemic-risk evidence ledger and incident/replay records | Model-scale assessment, risk mitigation, reporting and cybersecurity | Provider-role dependent |
-| Article 72 | High-risk post-market monitoring must be active and systematic | Monitoring event ledger, drift/replay mismatch and revalidation trigger | Post-market monitoring plan and lifetime performance data | Partial |
-| Article 73 | Serious incidents need timely reporting and investigation | Incident ID, immutable timeline, evidence preservation and export | Causal investigation, authority report, corrective action | Evidence interface |
-| Articles 74â€“84 | Market surveillance, confidentiality and corrective enforcement | Exportable, scoped, reviewable evidence without exposing unrelated tenants | Authority interface, confidentiality controls, response process | Partial |
-| Article 99 | Penalties make inaccurate claims and missing controls expensive | ClaimLint-style wording checks, evidence completeness and â€œnot certifiedâ€ boundary | Legal/compliance programme and jurisdiction-specific advice | Risk reduction only |
-
-Primary legal text and the official article explorer: [EUR-Lex](https://eur-lex.europa.eu/eli/reg/2024/1689/oj?locale=en),
-[AI Act Explorer](https://ai-act-service-desk.ec.europa.eu/en/ai-act-explorer).
-
-## How DTL fixes the recurring failure modes
-
-### 1. Model confidence is mistaken for compliance
-
-**Failure:** a model says â€œthis is compliantâ€ with 99% confidence.
-**DTL fix:** confidence is stored as non-authoritative metadata. Acceptance reads
-only from structured controls and declared evidence.
-
-### 2. The system silently changes its legal lane
-
-**Failure:** a generic chat route is used for employment, credit, health,
-education or public-service decisions without recognizing the change in
-intended purpose.
-**DTL fix:** intended purpose, affected group, jurisdiction and role are part of
-the canonical task hash. A material change invalidates the prior evidence and
-requires re-routing.
-
-### 3. A checklist says â€œdoneâ€ without proof
-
-**Failure:** a spreadsheet checkbox is treated as evidence.
-**DTL fix:** each control has an evidence reference, version, timestamp,
-provenance and verifier result. Missing evidence is `OPEN_EVIDENCE_GAP`, not
-green.
-
-### 4. One model judges another model
-
-**Failure:** AI output is accepted because a second model preferred it.
-**DTL fix:** use deterministic parsers, exact calculations, allowlists,
-schema checks, policy evaluation, replay comparison and human escalation.
-
-### 5. Disagreement is hidden
-
-**Failure:** repeated candidates conflict and the system silently picks one.
-**DTL fix:** canonicalize each candidate, compare semantic claims and classify
-the conflict as deterministic winner, multiple valid results, insufficient
-evidence or incomplete lane rules.
-
-### 6. Evidence cannot be replayed
-
-**Failure:** the organisation has a screenshot but not the inputs, rules or
-versions that produced it.
-**DTL fix:** seal the canonical task, policy snapshot, evidence references,
-ruleset version and result hash. Replay returns `MATCH`, `DRIFT`, `MISSING_INPUT`
-or `UNSAFE_REPLAY`.
-
-### 7. The verifier overclaims
-
-**Failure:** â€œpassed Article 15â€ is presented as â€œthe AI Act is satisfied.â€
-**DTL fix:** distinguish `system_support`, `evidence_present`, `human_reviewed`
-and `legal_classification_required`. The public API only exposes readiness
-mapping, never a compliance verdict.
-
-## Evidence pack minimum
-
-Every accepted or rejected result should be able to answer:
+An evidence record should preserve enough state for a reviewer to understand
+and reproduce what happened without collecting unnecessary personal data.
 
 ```json
 {
-  "schema": "eu-ai-act-dtl.evidence/v1",
+  "schema": "ecokure-dtl.evidence/v1",
   "canonical_task": {},
-  "intended_purpose": "",
   "operator_role": "provider|deployer|downstream_provider|other",
-  "jurisdiction_state": {},
-  "classification_record": {},
+  "intended_purpose": "",
   "policy_snapshot": {"id": "", "version": "", "sha256": ""},
   "model_state": {"provider": "", "model": "", "version": ""},
   "input_state_sha256": "",
+  "lane": "",
   "candidate_claims": [],
   "control_results": [],
   "human_review": {},
-  "verification_state": "PASS|FAIL|INCOMPLETE|ABSTAIN",
+  "verification_state": "ALLOW|BLOCK|ABSTAIN|INCOMPLETE",
   "canonical_result_sha256": "",
-  "limitations": [],
   "replay_instructions": {},
+  "limitations": [],
   "created_at": ""
 }
 ```
 
-Do not put unnecessary personal or sensitive data into an evidence pack. Use
-references, scoped access and redaction where possible. Hashing is integrity
-evidence; it is not encryption, anonymisation, lawful processing, or proof of
-truth.
+EvidencePack hashes are designed to be stable for the verified identity while
+excluding volatile timestamps from the certificate identity. ReplayGate can
+report a match, drift, missing input or unsafe replay. Attestation adds an
+Ed25519 signature over certificate-chain material and a tamper-evident chain
+head. Signature and hash evidence establish provenance and integrity; they do
+not establish the truth of an external source.
 
-## Safety and threat model
+## 7. Enterprise operating model
 
-DTL itself has failure modes:
-
-| Threat | Mitigation | Residual risk |
+| Control decision | Primary owner | DTL responsibility |
 |---|---|---|
-| Wrong legal profile supplied | Required profile fields, review status, change history | A verifier cannot correct a wrong legal premise by itself |
-| Candidate claims are mis-extracted | Structured schema, parser tests, conflict detection | Natural language remains ambiguous |
-| Evidence is stale or forged | Version pinning, provenance, signed/hash-chained packs, replay | A compromised source can still produce bad evidence |
-| Rules are incomplete | `LANE_INCOMPLETE` / `ABSTAIN`, coverage tests, external review | Unknown legal edge cases remain |
-| Replay executes unsafe commands | Allowlisted, offline or sandboxed replay; no arbitrary shell by default | Operational environment can still change |
-| Personal data is over-collected | Data minimisation, scoped packs, retention/access controls | Compliance requires organisational controls outside DTL |
-| Operators treat PASS as certification | Hard wording boundary, ClaimLint, public limitations | Human misuse is not eliminated |
-| Version drift changes verdicts | Input/policy/ruleset hashes and replay mismatch | Some external APIs are nondeterministic |
+| Role, jurisdiction and intended purpose | Product/legal/compliance | Store as an explicit, versioned profile |
+| Model and application inventory | AI platform owner | Bind model/version state to a task and evidence record |
+| Lane and verifier definition | Domain owner | Require gate contract, version and promotion rule |
+| Candidate generation | AI/application team | Preserve candidate identity and confidence as metadata |
+| Acceptance or abstention | DTL verifier and responsible operator | Return deterministic state and escalation reason |
+| Human oversight | Deployer/domain owner | Record reviewer, decision, override and authority |
+| Monitoring and incident handling | Operations/risk/security | Preserve event timeline, revalidation trigger and export |
+| Evidence retention and access | Governance/security | Scope, redact, sign, replay and audit records |
 
-## Professionalisation roadmap
+The platform is intended to make responsibility visible, not to move legal or
+operational responsibility into a software package.
 
-### 1. Make the public proof undeniable
+## 8. EU AI Act implementation profile
 
-- Keep the demo under 200 lines of dependency-free code.
-- Publish fixed positive, negative, conflict and insufficient-evidence cases.
-- Add a JSON Schema and a replay fixture for every case.
-- Publish measured latency with hardware, Python version and exact commit.
-- Add a â€œwhat this does not proveâ€ section to every public gate.
+The European Union AI Act is role-, purpose-, risk- and context-dependent. DTL
+therefore treats the operator's legal/product profile as an input. It does not
+infer classification from a model response or confidence score.
 
-### 2. Build a real compliance evidence product
+### 8.1 Mapping
 
-- Add a signed control registry with article, applicability, owner, evidence
-  type, cadence and review status.
-- Add provider/deployer/GPAI role workspaces.
-- Add evidence expiry and revalidation triggers.
-- Add a human review queue with two-person approval for configured lanes.
-- Add machine-readable Article 50 output metadata and media marking adapters.
-- Add incident, corrective-action and post-market monitoring workflows.
+| Act area | DTL technical support | Evidence still required outside DTL | Profile status |
+|---|---|---|---|
+| Articles 2â€“3, 6â€“7 | Role, jurisdiction, intended purpose and classification records | Scope analysis, Annex III assessment and legal sign-off | Operator input required |
+| Article 4 | Role-bound AI-literacy evidence reference | Training plan, attendance and competency evidence | Evidence interface |
+| Article 5 | Fail-closed prohibited-practice screen | Policy catalogue, abuse testing and legal review | Partial reference lane |
+| Article 9 | Risk-state hash, residual-risk and change-triggered checks | Risk register, foreseeable misuse, mitigations and metrics | Partial |
+| Article 10 | Data provenance, freshness and completeness fields | Data governance, representativeness and quality analysis | Partial |
+| Article 11 | Model/ruleset manifest and evidence export | Annex IV technical documentation and evaluation file | Partial |
+| Article 12 | Hash-chained task, route, controls and verdict | Retention, access, deletion and security policy | Strong technical support |
+| Article 13 | Result explanation, limitations and reason codes | Instructions for use, contact details and user testing | Partial |
+| Article 14 | Abstention, escalation, reviewer and override states | Oversight procedure, authority, staffing and training | Strong technical support |
+| Article 15 | Deterministic tests, replay mismatch and revalidation triggers | Lifecycle accuracy, robustness, cybersecurity and monitoring | Partial |
+| Article 26 | Deployer-scoped monitoring, evidence and escalation | Instructions, data governance and incident process | Partial |
+| Article 27 | FRIA record and affected-group/mitigation fields | Completed fundamental-rights impact assessment and notification | Evidence interface |
+| Article 50 | Disclosure trigger and output/provenance state | UX placement, accessibility, user testing and marking implementation | Demonstrated reference lane |
+| Articles 51â€“54 | GPAI model/version/source evidence interfaces | Technical documentation, copyright policy and public summary | Provider-role dependent |
+| Article 55 | Systemic-risk evidence, incident and cybersecurity records | Risk assessment, mitigation, reporting and cybersecurity programme | Provider-role dependent |
+| Article 72 | Monitoring events, drift and replay mismatch | Post-market monitoring plan and lifetime performance data | Partial |
+| Article 73 | Incident ID, immutable timeline and evidence export | Investigation, authority report and corrective action | Evidence interface |
+| Article 99 | Evidence completeness and claim wording controls | Legal/compliance programme and jurisdiction-specific advice | Risk reduction only |
 
-### 3. Win trust through independent verification
+The public API uses readiness language such as `READINESS_MAPPING_ONLY` and
+keeps applicability conditional. A green technical control is not a green
+legal conclusion.
 
-- Publish a threat model and reproducible conformance suite.
-- Invite external legal, safety, security and academic reviewers.
-- Never publish unsupported â€œfirst,â€ â€œcertified,â€ or â€œ100% compliantâ€ claims.
-- Separate open reference code from proprietary tenant, billing and model
-  infrastructure.
-- Maintain a changelog when Commission guidance, codes of practice or the Act's
-  implementation timeline changes.
+### 8.2 Article 50 example
 
-### 4. Productise the boundary, not the slogan
+The reference case represents a customer-facing AI interaction in an EU
+context. The candidate has high confidence but the declared disclosure control
+is missing. The verifier returns `BLOCK`. A corrected candidate with the same
+profile and evidence state, but with disclosure applied, returns `ALLOW`.
 
-The commercial unit is not â€œAI compliance by magic.â€ It is:
+This demonstrates the boundary: a confidence score cannot override a required
+control. It does not claim that the example covers every Article 50 condition.
+
+### 8.3 Implementation lifecycle
 
 ```text
-declared scope
-    + evidence collection
-    + deterministic control execution
-    + human review
-    + replay and drift detection
-    + exportable audit pack
+declare role and purpose
+    -> classify and record applicability
+    -> bind policy and evidence owners
+    -> map controls to deterministic checks
+    -> collect human and organisational evidence
+    -> run and seal results
+    -> replay on release or material change
+    -> monitor, investigate and export
 ```
 
-That is a defensible product proposition because each part can be demonstrated,
-measured and challenged independently.
+The official timeline and guidance must be rechecked at every release because
+application dates, guidance and delegated implementation details can change.
 
-## Claim policy
+## 9. Security and failure model
 
-Allowed:
+| Failure mode | DTL response | Residual risk |
+|---|---|---|
+| Wrong role or legal profile | Require declared, versioned profile and review status | Software cannot correct a wrong legal premise |
+| Candidate claim extraction error | Structured schemas, parser tests and human escalation | Natural language remains ambiguous |
+| Conflicting model candidates | Compare canonical results; block, abstain or classify multiple valid outcomes | Lane rules may not cover every ambiguity |
+| Missing or stale evidence | Evidence requirements, hashes, expiry and replay | External evidence sources can be wrong |
+| Model confidence used as proof | Exclude confidence from semantic acceptance | Operators may still misuse the UI |
+| Lane incompleteness | `ABSTAIN` or `INCOMPLETE`, never silent acceptance | Coverage needs continuous testing |
+| Replay drift | Compare ruleset, code, data and state identity | Runtime dependencies can change |
+| Tenant leakage | Tenant ownership, access-scoped route and explicit bridge record | Deployment identity and storage controls remain important |
+| Unsafe sink value | Fail-closed App Guard and abstention on uncovered cases | Coverage and integration must be maintained |
+| Overclaiming | ClaimLint and public wording policy | External review is still required |
 
-- â€œDTL provides a deterministic evidence and verification layer.â€
-- â€œThis lane blocks a candidate when the declared control is missing.â€
-- â€œThe result is replayable for the same canonical state.â€
-- â€œThe implementation maps technical controls to selected AI Act articles.â€
+## 10. Integration contract
 
-Not allowed without independent legal and technical substantiation:
+A company integration should define at least:
 
-- â€œJARVI3 is EU AI Act certified.â€
-- â€œDTL makes any AI system compliant.â€
-- â€œA PASS proves safety, fairness, accuracy or legal conformity.â€
+- tenant and workspace identity;
+- operator role and intended purpose;
+- model, ruleset and application versions;
+- evidence sources and retention policy;
+- lane ownership and verifier version;
+- human-review roles and escalation timeouts;
+- accepted, blocked and abstained actions;
+- incident and post-market monitoring hooks; and
+- export, replay and key-management requirements.
+
+The reference verifier's output contains the canonical task, input-state hash,
+lane, required controls, control results, verification state, canonical result
+hash and replay key. A production integration should add identity, access,
+retention, redaction, observability and customer-specific data controls.
+
+## 11. Verification and conformance programme
+
+An enterprise pilot should prove the following before production use:
+
+1. identical canonical states replay to identical semantic results;
+2. changing one policy, evidence or ruleset input invalidates the prior result;
+3. missing required controls produce block or abstention;
+4. disagreement is observable and cannot be hidden by confidence;
+5. failed lane attempts cannot be served as verified knowledge;
+6. tenant-private lanes are not returned to another tenant;
+7. evidence packs can be verified offline or in the customer's audit system;
+8. signatures and chain history detect tampering; and
+9. domain owners can explain the verifier's limits and escalation path.
+
+The conformance result is a statement about the tested implementation and
+state. It is not a statement that the wider company or legal system is
+compliant.
+
+## 12. Implementation roadmap
+
+### Phase 1 â€” establish the acceptance boundary
+
+- define canonical tasks, state hashes and lane markers;
+- choose one low-risk, deterministic pilot such as exact arithmetic, claims or
+  application security;
+- publish positive, negative, disagreement and insufficient-evidence fixtures;
+- make `ALLOW`, `BLOCK`, `ABSTAIN` and `INCOMPLETE` visible to operators.
+
+### Phase 2 â€” establish enterprise evidence
+
+- bind model, policy, data and ruleset versions;
+- deploy EvidencePack and ReplayGate;
+- add signed attestation, access control, redaction and retention;
+- integrate human review and incident references.
+
+### Phase 3 â€” apply governance profiles
+
+- record provider/deployer and intended-purpose profiles;
+- map selected EU AI Act controls to owners and evidence types;
+- add change-triggered revalidation and monitoring;
+- obtain independent legal, security and domain review.
+
+### Phase 4 â€” scale the lane portfolio
+
+- onboard private tenant lanes;
+- publish domain-specific maturity labels and verifier contracts;
+- add partner API metering and operational support;
+- keep research previews separate from regulated production claims.
+
+## 13. Claims policy
+
+Permitted claims:
+
+- EcoKure DTL provides deterministic verification infrastructure for
+  probabilistic AI.
+- A defined lane can accept, reject or abstain on a defined state.
+- EvidencePack and ReplayGate preserve and test reproducibility of what was
+  checked.
+- The EU AI Act profile maps selected obligations to technical evidence
+  interfaces.
+
+Claims requiring independent substantiation are not permitted:
+
+- â€œEcoKure DTL certifies EU AI Act compliance.â€
+- â€œA passing gate proves safety, fairness, clinical correctness or legality.â€
 - â€œThe model is deterministic.â€
-- â€œThis is a substitute for a notified body, authority, lawyer or domain expert.â€
+- â€œThe platform replaces a lawyer, regulator, notified body or domain expert.â€
+- â€œEvery domain gate is production-ready.â€
+
+## 14. Official sources
+
+- [Regulation (EU) 2024/1689 on EUR-Lex](https://eur-lex.europa.eu/eli/reg/2024/1689/oj?locale=en)
+- [EU AI Act implementation timeline](https://ai-act-service-desk.ec.europa.eu/en/ai-act/eu-ai-act-implementation-timeline)
+- [Article 50 transparency guidance](https://digital-strategy.ec.europa.eu/en/policies/guidelines-ai-transparency-obligations)
+- [Article 50 FAQ](https://digital-strategy.ec.europa.eu/en/faqs/transparency-obligations-under-article-50-ai-act)
+- [Code of Practice on AI-generated content](https://digital-strategy.ec.europa.eu/en/policies/code-practice-ai-generated-content)
+- [High-risk systems guidance](https://digital-strategy.ec.europa.eu/en/policies/guidelines-ai-high-risk-systems)
+- [Article 27 fundamental-rights impact assessment](https://ai-act-service-desk.ec.europa.eu/en/ai-act/article-27)
+- [Article 72 post-market monitoring](https://ai-act-service-desk.ec.europa.eu/en/ai-act/article-72)
+- [Article 73 serious incidents](https://ai-act-service-desk.ec.europa.eu/en/ai-act/article-73)
+- [Article 99 penalties](https://ai-act-service-desk.ec.europa.eu/en/ai-act/article-99)
 
 ## Conclusion
 
-The next era is not a deterministic language model. It is a probabilistic model
-inside a deterministic acceptance boundary. DTL gives the boundary a canonical
-task, explicit lane, evidence state, verifier, human escalation path and replay
-receipt.
+The next era of AI assurance is not a deterministic model. It is a
+probabilistic model operating inside a deterministic acceptance boundary with
+clear ownership, explicit evidence, replay, attestation and human escalation.
 
-That can make AI governance more inspectable. It cannot remove the need for
-classification, domain expertise, organisational controls, legal review or
-competent-authority oversight. The public project should earn trust by making
-those limits visible.
+EcoKure DTL makes that boundary modular across company workflows. The EU AI
+Act profile demonstrates how the method can be applied to a complex governance
+regime while preserving the distinction between technical evidence and legal
+responsibility.

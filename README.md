@@ -49,7 +49,7 @@ result** deterministic.
 - [Control matrix, research and roadmap](EU_AI_ACT_DTL_WHITEPAPER.md#control-by-control-mapping)
 - [Official research sources](RESEARCH_SOURCES.md)
 - [Threat model and limitations](EU_AI_ACT_DTL_WHITEPAPER.md#safety-and-threat-model)
-- [GitHub profile audit and 100x plan](PROFILE_AUDIT.md)
+- [GitHub profile audit and professionalisation plan](PROFILE_AUDIT.md)
 
 ## Run the demo
 

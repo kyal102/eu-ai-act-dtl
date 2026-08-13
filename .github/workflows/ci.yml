@@ -1,0 +1,23 @@
+name: EU AI Act DTL reference verifier
+
+on:
+  push:
+    paths:
+      - "eu-ai-act-dtl/**"
+  pull_request:
+    paths:
+      - "eu-ai-act-dtl/**"
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: eu-ai-act-dtl
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - run: python -m unittest discover -p "test_*.py"
+      - run: python eu_ai_act_dtl.py example.json > /tmp/eu-ai-act-dtl-result.json

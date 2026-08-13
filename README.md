@@ -1,5 +1,8 @@
 # EU AI Act DTL
 
+[![Reference CI](https://github.com/kyal102/eu-ai-act-dtl/actions/workflows/ci.yml/badge.svg)](https://github.com/kyal102/eu-ai-act-dtl/actions/workflows/ci.yml)
+[![Latest release](https://img.shields.io/github/v/release/kyal102/eu-ai-act-dtl?label=release)](https://github.com/kyal102/eu-ai-act-dtl/releases)
+
 ## The missing layer between AI generation and accountable acceptance
 
 Large language models are probabilistic. Compliance decisions cannot be
